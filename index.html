@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Static S3 Website</title>
+    <style>
+        :root {
+            --bg-gradient-1: #141e30;
+            --bg-gradient-2: #243b55;
+            --accent: #4fd1c5;
+            --accent-soft: rgba(79, 209, 197, 0.15);
+            --text-main: #f7fafc;
+            --text-muted: #a0aec0;
+            --card-bg: rgba(15, 23, 42, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh;
+            color: var(--text-main);
+            background: linear-gradient(130deg, var(--bg-gradient-1), var(--bg-gradient-2));
+            background-size: 200% 200%;
+            animation: bg-shift 15s ease-in-out infinite;
+            display: flex;
+            justify-content: center;
+        }
+
+        @keyframes bg-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1100px;
+            padding: 24px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .logo-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .pill {
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 32px;
+            align-items: center;
+        }
+
+        @media (max-width: 800px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+
+        .hero-text {
+            animation: fade-up 1.2s ease-out;
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: clamp(2.4rem, 4vw, 3rem);
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 480px;
+            margin-bottom: 20px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: none;
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(79, 209, 197, 0.4);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 35px rgba(79, 209, 197, 0.55);
+        }
+
+        .hero-meta {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .hero-meta strong {
+            color: var(--accent);
+        }
+
+        /* Right side image card */
+        .hero-visual {
+            position: relative;
+            animation: fade-up 1.4s ease-out;
+        }
+
+        .glass-card {
+            position: relative;
+            border-radius: 22px;
+            overflow: hidden;
+            background: radial-gradient(circle at top left, rgba(79, 209, 197, 0.18), transparent 60%),
+                        radial-gradient(circle at bottom, rgba(56, 189, 248, 0.16), transparent 60%),
+                        rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            filter: saturate(1.1);
+        }
+
+        .card-content {
+            padding: 16px 18px 18px 18px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .metrics {
+            display: flex;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .metric-label {
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .metric-value {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            top: -18px;
+            right: -10px;
+            filter: blur(4px);
+            animation: float 4s ease-in-out infinite alternate;
+        }
+
+        .glow-orb:nth-child(2) {
+            width: 40px;
+            height: 40px;
+            top: auto;
+            bottom: -10px;
+            left: -10px;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+            100% { transform: translateY(-10px) translateX(6px); opacity: 1; }
+        }
+
+        /* Info section at bottom */
+        .info-grid {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        @media (max-width: 800px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            font-size: 0.85rem;
+        }
+
+        .info-label {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .info-text {
+            color: var(--text-main);
+        }
+
+        .info-text strong {
+            color: var(--accent);
+        }
+
+        footer {
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div class="logo">
+                <div class="logo-badge">S3</div>
+                <span>Static Site</span>
+            </div>
+            <div class="pill">
+                Deployed with <strong>Terraform</strong> & AWS S3
+            </div>
+        </header>
+
+        <main>
+            <section class="hero-text">
+                <h1>
+                    Your <span>Cloud Website</span><br />
+                    is Live on S3 🚀
+                </h1>
+                <p class="subtitle">
+                    This static website is hosted on an Amazon S3 bucket and provisioned automatically using Terraform. 
+                    No servers to manage, just pure HTML, CSS, and the power of infrastructure as code.
+                </p>
+
+                <div class="tags">
+                    <span class="tag">AWS S3 Static Hosting</span>
+                    <span class="tag">Terraform IaC</span>
+                    <span class="tag">Highly Available</span>
+                    <span class="tag">Cost-Effective</span>
+                </div>
+
+                <a class="primary-btn" href="#about">
+                    View Site Details
+                    <span>↓</span>
+                </a>
+
+                <p class="hero-meta">
+                    <strong>Tip:</strong> You can change this page anytime by updating <code>index.html</code> and re-uploading it.
+                </p>
+            </section>
+
+            <section class="hero-visual">
+                <div class="glass-card">
+                    <img
+                        class="hero-image"
+                        src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80"
+                        alt="Abstract representation of cloud infrastructure"
+                    />
+                    <div class="card-content">
+                        <div class="card-title">Cloud Dashboard Preview</div>
+                        <div class="card-subtitle">Static website delivered securely from S3.</div>
+                        <div class="metrics">
+                            <div>
+                                <span class="metric-label">Region</span>
+                                <span class="metric-value">ap-south-1</span>
+                            </div>
+                            <div>
+                                <span class="metric-label">Bucket</span>
+                                <span class="metric-value">my-s3-static-site</span>
+                            </div>
+                            <div>
+                                <span class="metric-label">Status</span>
+                                <span class="metric-value">✅ Online</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glow-orb"></div>
+                <div class="glow-orb"></div>
+            </section>
+        </main>
+
+        <section id="about" class="info-grid">
+            <article class="info-card">
+                <div class="info-label">About this site</div>
+                <p class="info-text">
+                    This is a <strong>static website</strong> consisting of just HTML and CSS.
+                    It’s served directly from an S3 bucket configured for website hosting. No backend, no runtime — just fast content delivery.
+                </p>
+            </article>
+
+            <article class="info-card">
+                <div class="info-label">Deployed using Terraform</div>
+                <p class="info-text">
+                    The S3 bucket, policies, and website configuration were created using <strong>Terraform</strong>.
+                    That means your infrastructure is version-controlled, repeatable, and easy to destroy or recreate.
+                </p>
+            </article>
+
+            <article class="info-card">
+                <div class="info-label">Next steps</div>
+                <p class="info-text">
+                    Try adding more pages, custom domains with Route 53, or a CDN layer using <strong>CloudFront</strong>.
+                    This simple site is a great base to practice real-world AWS + Terraform workflows.
+                </p>
+            </article>
+        </section>
+
+        <footer>
+            Static site hosted on Amazon S3 · Infrastructure managed with Terraform
+        </footer>
+    </div>
+</body>
+</html>
